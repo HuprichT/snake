@@ -7,7 +7,8 @@
     <title>Document</title> 
 </head>
 <body>
-
+    <p id="score">Punkestand:</p>
+    <p id="highscore">Highscore:</p>    
     <canvas id="canvas" width="620" height="620"></canvas>
 
     <script>
@@ -26,16 +27,24 @@
             width: cellWidth
         };
         let foodCollected = false;
+        const scoreSteps = 10;
+        let score = 0;
+        let scoreLogMsg = "Punktestand";
+        let dailyHighscoreMsg = "Tages Highscore: ";
+        let dailyHighscore = 0;
 
         placeFood();
 
         setInterval(gameLoop, 200);
 
         document.addEventListener('keydown', keyDown);
-        
+
         draw();
 
         function draw(){
+            document.getElementById('score').innerHTML = scoreLogMsg;
+            document.getElementById('highscore').innerHTML = dailyHighscoreMsg;
+            
             ctx.fillStyle = 'black';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = 'white';
@@ -129,6 +138,9 @@
                     //Collect Food
                     foodCollected = true;
 
+                    score = score + scoreSteps;
+                    scoreLogMsg = "Punkestand: " + score; 
+
                     //Place Food
                     placeFood();
                 }
@@ -146,15 +158,23 @@
                snake[0].y < 0 ||
                snake[0].y > rows - 1 || 
                duplicatePart){
-                  placeFood();
-                  snake = [{
+                  resetGame();
+               }
+        }
+        function resetGame(){
+            placeFood();
+                snake = [{
                     x: 19, 
                     y: 3
                   }];
                   direction = 'LEFT';
-               }
+        
+                if (score > dailyHighscore){
+                    dailyHighscore = score;
+                    dailyHighscoreMsg = "Tages Highscore: " + dailyHighscore;
+                }
+                score = 0;
         }
-
     </script>
 </body>
 </html>
