@@ -14,12 +14,18 @@ let snakeSize = {
 };
 let foodCollected = false;
 let gamePaused = true;
+let gameOver = false;
+let GameStatus = 'START';
 const scoreSteps = 10;
 let score = 0;
-let scoreLogMsg = "Punktestand";
+let scoreLogMsg = "Punktestand:";
 let dailyHighscoreMsg = "Tages Highscore: ";
 let dailyHighscore = 0;
-
+/*
+let timeInterval = 200;
+let gameDifficulty = 1;
+let maxGameDifficulty = 5; //The game Speed will hbe accelerated 4 Times
+*/
 placeFood();
 
 setInterval(gameLoop, 200);
@@ -32,14 +38,7 @@ function draw(){
     document.getElementById('score').innerHTML = scoreLogMsg;
     document.getElementById('highscore').innerHTML = dailyHighscoreMsg;
     
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'white';
-
-    snake.forEach(part => add(part.x, part.y));
-
-    ctx.fillStyle = 'green';
-    add(food.x, food.y);        
+    fillCanvas(gamePaused);
 
     requestAnimationFrame(draw);
 }
@@ -104,6 +103,8 @@ function keyDown(e){
 
     if (e.keyCode == 32){
         gamePaused = !gamePaused;
+        //Check if the Game has started
+        if (GameStatus = 'START') { GameStatus = 'STARTED'};
     }
 }
 
@@ -153,6 +154,8 @@ function testGameOver(){
        snake[0].y < 0 ||
        snake[0].y > rows - 1 || 
        duplicatePart){
+          gameOver = true;
+          GameStatus = 'GAMEOVER';
           resetGame();
        }
 }
@@ -170,4 +173,35 @@ function resetGame(){
         }
         score = 0;
         gamePaused = true;
+}
+
+function fillCanvas(isGamePaused){
+    var x = canvas.width / 2;
+    var y = canvas.height / 2;
+
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white';
+
+    if (GameStatus == 'START'){
+        subheader = 'Press Space to start';
+    } else {
+        subheader = 'Press Space to resume';
+    }
+
+    if (isGamePaused ){
+    var fontDescr = "bold 18px Arial"; 
+    ctx.font = "bold 18px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Game Paused", x, y);
+    ctx.font = "bold 14px Arial";
+    ctx.fillText(subheader,x , ( y + 20 ));
+    }
+    else{
+
+    snake.forEach(part => add(part.x, part.y));
+    ctx.fillStyle = 'green';
+    add(food.x, food.y); 
+
+    }   
 }
