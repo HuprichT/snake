@@ -21,14 +21,18 @@ let score = 0;
 let scoreLogMsg = "Punktestand:";
 let dailyHighscoreMsg = "Tages Highscore: ";
 let dailyHighscore = 0;
-/*
+
+let timerMessage = "Zeit (sek): ";
+let timeElapsed = 0;
+let timeSeconds = 0;
+
 let timeInterval = 200;
 let gameDifficulty = 1;
-let maxGameDifficulty = 5; //The game Speed will hbe accelerated 4 Times
-*/
+let maxGameDifficulty = 5; //The game Speed will be accelerated 4 Times
+
 placeFood();
 
-setInterval(gameLoop, 200);
+setInterval(gameLoop, timeInterval);
 
 document.addEventListener('keydown', keyDown);
 
@@ -37,6 +41,7 @@ draw();
 function draw(){
     document.getElementById('score').innerHTML = scoreLogMsg;
     document.getElementById('highscore').innerHTML = dailyHighscoreMsg;
+    document.getElementById('time').innerHTML = timerMessage;
     
     fillCanvas(gamePaused);
 
@@ -44,10 +49,15 @@ function draw(){
 }
 
 function gameLoop(){
-
+    
     if (gamePaused){
         return;
     }
+
+    timeElapsed += 200;
+    timeSeconds = ((timeElapsed % 60000) / 1000).toFixed(0);
+
+    timerMessage = "Zeit (sek): " + timeSeconds;
 
     collisionDetect();
     testGameOver();
@@ -204,4 +214,4 @@ function fillCanvas(isGamePaused){
     add(food.x, food.y); 
 
     }   
-}
+} 
